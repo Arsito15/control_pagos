@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
-                model: 'cuentas',
+                model: 'cuenta', // El nombre del modelo debe coincidir
                 key: 'IdCuenta'
             }
         },
@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
-                model: 'tipoTransacciones',
+                model: 'tipoTransacciones', // Asegúrate de que este modelo también esté correctamente definido
                 key: 'id_tipoTransaccion'
             }
         },
@@ -33,18 +33,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: true
         }
-    });
-
-    // Relación de ControlTransacciones con Cuenta
-    ControlTransacciones.belongsTo(sequelize.models.Cuenta, {
-        foreignKey: 'id_Cuenta',
-        as: 'cuenta'
-    });
-
-    // Relación de ControlTransacciones con TipoTransaccion
-    ControlTransacciones.belongsTo(sequelize.models.TipoTransaccion, {
-        foreignKey: 'id_tipoTransaccion',
-        as: 'tipoTransaccion'
     });
 
     return ControlTransacciones;

@@ -34,11 +34,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    // Relación entre Cuenta y ControlTransacciones
-    Cuenta.hasMany(sequelize.models.ControlTransacciones, {
-        foreignKey: 'id_Cuenta',
-        as: 'transacciones'
-    });
-
     return Cuenta;
 };

@@ -25,9 +25,26 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+// Importar los modelos
 db.Cuenta = require('../models/cuenta.model.js')(sequelize, Sequelize);
 db.TipoTransaccion = require('../models/tipotransaccion.model.js')(sequelize, Sequelize);
 db.ControlTransacciones = require('../models/controltransacciones.model.js')(sequelize, Sequelize);
 
+// Definir las asociaciones después de que los modelos hayan sido importados
+db.Cuenta.hasMany(db.ControlTransacciones, {
+  foreignKey: 'id_Cuenta',
+  as: 'transacciones'
+});
 
+db.ControlTransacciones.belongsTo(db.Cuenta, {
+  foreignKey: 'id_Cuenta',
+  as: 'cuenta'
+});
+
+db.ControlTransacciones.belongsTo(db.TipoTransaccion, {
+  foreignKey: 'id_tipoTransaccion',
+  as: 'tipoTransaccion'
+});
+
+// Exportar la configuración de la base de datos con todos los modelos y asociaciones
 module.exports = db;
