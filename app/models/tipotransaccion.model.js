@@ -12,5 +12,4 @@ module.exports = (sequelize, Sequelize) => {
     });
   
     return TipoTransaccion;
-  };
-  
+};

@@ -7,11 +7,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         id_Cuenta: {
             type: Sequelize.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'cuenta', // El nombre del modelo debe coincidir
-                key: 'IdCuenta'
-            }
+            allowNull: false
         },
         FechaHoraIngreso: {
             type: Sequelize.DATE,
@@ -19,11 +15,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         id_tipoTransaccion: {
             type: Sequelize.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'tipoTransacciones', // Asegúrate de que este modelo también esté correctamente definido
-                key: 'id_tipoTransaccion'
-            }
+            allowNull: false
         },
         MontoTransaccionCredito: {
             type: Sequelize.DECIMAL(10, 2),
