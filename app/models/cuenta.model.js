@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         TipoCuenta: {
-            type: Sequelize.STRING, // Puede ser "Ahorro" o "Monetario"
+            type: Sequelize.STRING,
             allowNull: false
         },
         NombreCompleto: {
@@ -33,5 +33,12 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         }
     });
+
+    // Relación entre Cuenta y ControlTransacciones
+    Cuenta.hasMany(sequelize.models.ControlTransacciones, {
+        foreignKey: 'id_Cuenta',
+        as: 'transacciones'
+    });
+
     return Cuenta;
 };

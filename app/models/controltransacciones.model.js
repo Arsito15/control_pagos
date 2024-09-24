@@ -34,5 +34,18 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true
         }
     });
+
+    // Relación de ControlTransacciones con Cuenta
+    ControlTransacciones.belongsTo(sequelize.models.Cuenta, {
+        foreignKey: 'id_Cuenta',
+        as: 'cuenta'
+    });
+
+    // Relación de ControlTransacciones con TipoTransaccion
+    ControlTransacciones.belongsTo(sequelize.models.TipoTransaccion, {
+        foreignKey: 'id_tipoTransaccion',
+        as: 'tipoTransaccion'
+    });
+
     return ControlTransacciones;
 };
