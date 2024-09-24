@@ -1,47 +1,40 @@
-const db = require('../config/db.config.js');
-const ControlTransacciones = db.ControlTransacciones;
-const Cuenta = db.Cuenta;
-
-exports.create = async (req, res) => {
-    try {
-        const { id_Cuenta, id_tipoTransaccion, MontoTransaccionCredito, MontoTransaccionDebito } = req.body;
-
-        // Registrar la transacción
-        const transaccion = await ControlTransacciones.create(req.body);
-
-        // Actualizar el saldo de la cuenta
-        const cuenta = await Cuenta.findByPk(id_Cuenta);
-        if (!cuenta) {
-            return res.status(404).json({ message: "Cuenta no encontrada" });
+module.exports = (sequelize, Sequelize) => {
+    const ControlTransacciones = sequelize.define('controlTransacciones', {
+      id_registro: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      id_Cuenta: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'cuenta', // La tabla 'cuenta' debe existir
+          key: 'IdCuenta'
         }
-
-        let nuevoSaldo = parseFloat(cuenta.SaldoInicial);
-        if (MontoTransaccionCredito) {
-            nuevoSaldo += parseFloat(MontoTransaccionCredito);
-        } else if (MontoTransaccionDebito) {
-            nuevoSaldo -= parseFloat(MontoTransaccionDebito);
+      },
+      FechaHoraIngreso: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      id_tipoTransaccion: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'tipoTransaccion', // Referencia a la tabla tipoTransaccion
+          key: 'id_tipoTransaccion'
         }
-
-        await cuenta.update({ SaldoInicial: nuevoSaldo });
-
-        res.status(200).json({ message: "Transacción registrada y saldo actualizado", transaccion, saldoActualizado: nuevoSaldo });
-    } catch (error) {
-        res.status(500).json({ message: "Error al registrar la transacción", error: error.message });
-    }
-};
-
-exports.retrieveAllTransacciones = (req, res) => {
-    ControlTransacciones.findAll().then(transacciones => {
-        res.status(200).json({ transacciones });
-    }).catch(error => {
-        res.status(500).json({ error: error.message });
+      },
+      MontoTransaccionCredito: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true
+      },
+      MontoTransaccionDebito: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true
+      }
     });
-};
-
-exports.getTransaccionById = (req, res) => {
-    ControlTransacciones.findByPk(req.params.id).then(transaccion => {
-        res.status(200).json({ transaccion });
-    }).catch(error => {
-        res.status(500).json({ error: error.message });
-    });
-};
+  
+    return ControlTransacciones;
+  };
+  
