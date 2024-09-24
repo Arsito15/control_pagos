@@ -1,19 +1,19 @@
 const env = require('./env.js');
- 
+
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(env.database, env.username, env.password, {
   host: env.host,
   dialect: env.dialect,
-  dialectOptions:{
+  dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
     }
   },
   operatorsAliases: false,
- 
+
   pool: {
-    max: env.max,
+    max: env.pool.max,
     min: env.pool.min,
     acquire: env.pool.acquire,
     idle: env.pool.idle,
@@ -21,9 +21,6 @@ const sequelize = new Sequelize(env.database, env.username, env.password, {
 });
 
 const db = {};
-
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
 
 // Importar los modelos
 db.Cuenta = require('../models/cuenta.model.js')(sequelize, Sequelize);
@@ -46,5 +43,14 @@ db.ControlTransacciones.belongsTo(db.TipoTransaccion, {
   as: 'tipoTransaccion'
 });
 
-// Exportar la configuración de la base de datos con todos los modelos y asociaciones
+// Sincronizar las tablas en el orden correcto
+db.sequelize.sync({ force: false }).then(async () => {
+  await db.TipoTransaccion.sync();  // Primero crea la tabla tipoTransacciones
+  await db.Cuenta.sync();           // Luego crea la tabla cuenta
+  await db.ControlTransacciones.sync(); // Finalmente crea controlTransacciones
+  console.log('Tablas sincronizadas correctamente.');
+}).catch(err => {
+  console.error('Error al sincronizar las tablas:', err);
+});
+
 module.exports = db;
